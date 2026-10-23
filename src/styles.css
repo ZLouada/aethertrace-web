@@ -1,0 +1,208 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --font-sans: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-card: 8px;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-offwhite: var(--offwhite);
+  --color-ink: var(--ink);
+  --color-ink-foreground: var(--ink-foreground);
+  --color-ink-muted: var(--ink-muted);
+  --color-ink-line: var(--ink-line);
+  --color-deck: var(--deck);
+  --color-deck-panel: var(--deck-panel);
+  --color-deck-raised: var(--deck-raised);
+  --color-deck-line: var(--deck-line);
+  --color-deck-fg: var(--deck-fg);
+  --color-deck-muted: var(--deck-muted);
+  --color-deck-dim: var(--deck-dim);
+}
+
+:root {
+  --radius: 0.75rem;
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.145 0 0);
+  --primary-foreground: oklch(1 0 0);
+  --secondary: oklch(0.965 0 0);
+  --secondary-foreground: oklch(0.145 0 0);
+  --muted: oklch(0.965 0 0);
+  --muted-foreground: oklch(0.45 0 0);
+  --accent: oklch(0.94 0 0);
+  --accent-foreground: oklch(0.145 0 0);
+  --destructive: oklch(0.45 0 0);
+  --destructive-foreground: oklch(1 0 0);
+  --border: oklch(0.9 0 0);
+  --input: oklch(0.9 0 0);
+  --ring: oklch(0.145 0 0);
+  --offwhite: oklch(0.965 0 0);
+  --ink: oklch(0.145 0 0);
+  --ink-foreground: oklch(0.98 0 0);
+  --ink-muted: oklch(0.72 0 0);
+  --ink-line: oklch(0.27 0 0);
+  --deck: oklch(0.145 0 0);
+  --deck-panel: oklch(0.19 0 0);
+  --deck-raised: oklch(0.23 0 0);
+  --deck-line: oklch(0.29 0 0);
+  --deck-fg: oklch(0.95 0 0);
+  --deck-muted: oklch(0.68 0 0);
+  --deck-dim: oklch(0.62 0 0);
+  --shadow-card: 0 1px 2px oklch(0 0 0 / 4%);
+  --shadow-window: 0 8px 24px -12px oklch(0 0 0 / 20%);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+  html {
+    scroll-padding-top: 5rem;
+    scroll-behavior: smooth;
+  }
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+  .bg-ink :focus-visible {
+    outline-color: var(--ink-foreground);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+}
+
+@utility headline {
+  font-size: 2.5rem;
+  @media (min-width: 640px) { font-size: 4rem; }
+  @media (min-width: 1024px) { font-size: 7.5rem; }
+  line-height: 0.95;
+  letter-spacing: 0;
+  font-weight: 300;
+}
+
+@utility headline-sm {
+  font-size: 2.125rem;
+  @media (min-width: 640px) { font-size: 3rem; }
+  @media (min-width: 1024px) { font-size: 4.5rem; }
+  line-height: 1;
+  letter-spacing: 0;
+  font-weight: 300;
+}
+
+@utility label-mono {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+@utility card-surface {
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  box-shadow: var(--shadow-card);
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.4s;
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-window);
+  }
+}
+
+@utility card-ink {
+  border-radius: 8px;
+  border: 1px solid var(--ink-line);
+  background: var(--ink-foreground);
+  color: var(--ink);
+}
+
+@utility glass-chip {
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--card);
+}
+
+@utility window {
+  border-radius: 8px;
+  border: 1px solid var(--deck-line);
+  background: var(--deck);
+  box-shadow: var(--shadow-window);
+  overflow: hidden;
+}
+
+@utility dot-grid {
+  background-image: radial-gradient(var(--deck-line) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+@utility wordmark {
+  font-family: var(--font-mono);
+  font-weight: 800;
+  font-size: 2rem;
+  line-height: 0.85;
+  letter-spacing: 0;
+}
+
+/* Narrow screenshot replicas retain readable labels before fitting to phones. */
+.phone-replica :is(.text-\[9px\], .text-\[10px\], .text-\[11px\], .text-\[11\.5px\]) {
+  font-size: 12px;
+}
+.phone-replica svg { flex-shrink: 0; }
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@utility animate-marquee {
+  animation: marquee 28s linear infinite;
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+}
+
+@media (max-width: 639px) {
+  .card-surface, .card-ink, .glass-chip { padding: 1.5rem; }
+  .window { border-radius: 8px; }
+  .card-surface:hover { transform: none; box-shadow: var(--shadow-card); }
+  .label-mono { font-size: 0.6875rem; letter-spacing: 0; }
+}
