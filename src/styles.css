@@ -46,7 +46,7 @@
 }
 
 :root {
-  --radius: 0.75rem;
+  --radius: 0.5rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
@@ -132,7 +132,7 @@
 @utility label-mono {
   font-family: var(--font-mono);
   font-size: 0.75rem;
-  letter-spacing: 0.08em;
+  letter-spacing: 0;
   text-transform: uppercase;
 }
 
@@ -205,4 +205,17 @@
   .window { border-radius: 8px; }
   .card-surface:hover { transform: none; box-shadow: var(--shadow-card); }
   .label-mono { font-size: 0.6875rem; letter-spacing: 0; }
+}
+
+/* Product-led release framing remains monochrome and uses existing tokens. */
+.release-frame {
+  border-top: 1px solid var(--border);
+  background: var(--offwhite);
+}
+.release-frame .window { box-shadow: var(--shadow-window); }
+.release-frame [role="tab"][aria-selected="false"] { color: var(--muted-foreground); }
+.release-frame [role="tab"][aria-selected="false"]:hover { color: var(--foreground); }
+.release-frame [role="tabpanel"] { min-height: 200px; }
+@media (prefers-reduced-motion: reduce) {
+  .card-surface { transition: none; }
 }

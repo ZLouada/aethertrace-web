@@ -1,19 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion } from "framer-motion";
 import {
-  Coins,
   Database,
   Eye,
-  FileDown,
   GitCompare,
   Github,
   Hourglass,
   Lock,
-  Scale,
-  ShieldOff,
-  Shuffle,
   SquareTerminal,
-  Command,
   CloudOff,
   ArrowUpRight,
   Radar,
@@ -23,31 +17,28 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import { useEffect, useRef, type ReactNode } from "react";
-import { CopyCommand, Headline, ICON, REPO, Reveal, Scaled, WordSwap, useAccessibleMotion } from "@/components/site/motion";
+import { CopyCommand, Headline, ICON, REPO, Reveal, Scaled, useAccessibleMotion } from "@/components/site/motion";
 import {
-  BreakpointMock,
   ChaosMock,
-  DiffMini,
 
-  ForkMock,
-  LoopMock,
   PaletteMock,
 } from "@/components/site/deck";
-import { EvaluationMock, ExperimentMock, SemanticDiffMock, UpdatedFlightDeck } from "@/components/site/v2-deck";
+import { FlightDeckV3, ReleaseShowcase, StudioV3 } from "@/components/site/v3-deck";
+import { Button } from "@/components/ui/button";
 
 const DESC =
-  "AetherTrace is the free, open-source, local-first debugger and experimentation platform for AI agents. Observe, intercept, replay, compare and evaluate agent execution.";
+  "A local workstation for agent execution. Follow the trace, intercept a request, fork a run, and verify what changed. Free and open source.";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "AetherTrace | Wireshark for AI Agents" },
+      { title: "AetherTrace v0.3 | The Local AI Agent Debugger" },
       { name: "description", content: DESC },
-      { property: "og:title", content: "AetherTrace | Wireshark for AI Agents" },
+      { property: "og:title", content: "AetherTrace v0.3 | The Local AI Agent Debugger" },
       { property: "og:description", content: DESC },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "AetherTrace | Wireshark for AI Agents" },
+      { name: "twitter:title", content: "AetherTrace v0.3 | The Local AI Agent Debugger" },
       { name: "twitter:description", content: DESC },
     ],
   }),
@@ -56,24 +47,24 @@ export const Route = createFileRoute("/")({
 
 function GitHubButton({ dark = false, label = "GitHub" }: { dark?: boolean; label?: string }) {
   return (
-    <a
+    <Button asChild variant="outline" className="h-12 rounded-md px-5"><a
       href={REPO}
       target="_blank"
       rel="noreferrer"
-      className={`inline-flex h-12 items-center justify-center gap-2 rounded-full border px-5 text-sm font-medium transition-colors ${
+      className={`inline-flex h-12 items-center justify-center gap-2 rounded-md border px-5 text-sm font-medium transition-colors ${
         dark
-          ? "border-ink-line text-ink-foreground hover:bg-ink-foreground hover:text-ink"
+          ? "border-ink-line bg-ink text-ink-foreground hover:bg-ink-foreground hover:text-ink"
           : "border-border bg-background text-foreground hover:border-foreground"
       }`}
     >
       <Github {...ICON} size={16} /> {label}
-    </a>
+    </a></Button>
   );
 }
 
 function Nav() {
   return (
-    <header className="sticky top-0 z-50 border-b border-border bg-background/85 backdrop-blur-md">
+    <header className="sticky top-0 z-50 border-b border-border bg-background/95">
       <nav className="mx-auto grid h-16 max-w-7xl grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-5 sm:flex sm:gap-8 md:px-8" aria-label="Main">
         <a href="#top" className="min-w-0 truncate font-mono text-base font-extrabold sm:text-lg">
           AETHERTRACE
@@ -84,14 +75,14 @@ function Nav() {
           <li><a className="hover:text-foreground" href="#integrations">Integrations</a></li>
           <li><a className="hover:text-foreground" href="#open-source">Open source</a></li>
         </ul>
-        <a
+        <Button asChild className="ml-auto h-11 rounded-md px-4"><a
           href={REPO}
           target="_blank"
           rel="noreferrer"
-          className="ml-auto inline-flex h-11 shrink-0 items-center gap-2 rounded-full bg-foreground px-4 text-sm font-medium text-background transition-opacity hover:opacity-85"
+          className="ml-auto inline-flex h-11 shrink-0 items-center gap-2 rounded-md bg-foreground px-4 text-sm font-medium text-background transition-opacity hover:opacity-85"
         >
           <Github {...ICON} size={15} /> GitHub
-        </a>
+        </a></Button>
       </nav>
     </header>
   );
@@ -99,7 +90,7 @@ function Nav() {
 
 function Wordmark({ dark = false }: { dark?: boolean }) {
   const reduce = useAccessibleMotion();
-  const wordmark = useRef<HTMLParagraphElement>(null);
+  const wordmark = useRef<HTMLHeadingElement>(null);
   useEffect(() => {
     const element = wordmark.current;
     if (!element) return;
@@ -113,8 +104,9 @@ function Wordmark({ dark = false }: { dark?: boolean }) {
     void document.fonts.ready.then(fit);
     return () => observer.disconnect();
   }, []);
+  const Tag = dark ? "h2" : "h1";
   return (
-    <p ref={wordmark} aria-label="AetherTrace" className={`wordmark select-none whitespace-nowrap ${dark ? "text-ink-foreground" : "text-foreground"}`}>
+    <Tag ref={wordmark} aria-label="AetherTrace" className={`wordmark select-none whitespace-nowrap ${dark ? "text-ink-foreground" : "text-foreground"}`}>
       {"AETHERTRACE".split("").map((c, i) => (
         <motion.span
           key={i}
@@ -129,103 +121,44 @@ function Wordmark({ dark = false }: { dark?: boolean }) {
           {c}
         </motion.span>
       ))}
-    </p>
+    </Tag>
   );
 }
 
 function Hero() {
   const reduce = useAccessibleMotion();
-  const { scrollYProgress } = useScroll();
-  const lift = useTransform(scrollYProgress, [0, 0.15], [0, -60]);
   return (
-    <section id="top" className="overflow-hidden bg-background pb-14 pt-8 sm:pb-24 sm:pt-12 md:pt-16">
+    <section id="top" className="overflow-hidden bg-background pb-0 pt-8 sm:pt-10 md:pt-12">
       <div className="mx-auto max-w-7xl px-5 md:px-8">
         <Wordmark />
         <Reveal delay={0.05}>
-          <p className="label-mono mt-7 flex flex-wrap items-center gap-3 text-muted-foreground sm:mt-8"><span className="border border-foreground px-2 py-1 text-foreground">v0.2.0</span> Wireshark for AI agents</p>
-          <h1 className="headline-sm mt-5 max-w-5xl">
-            The local debugger <span className="font-bold">for AI agents.</span>
-          </h1>
+          <p className="label-mono mt-7 flex flex-wrap items-center gap-3 text-muted-foreground sm:mt-8"><span className="inline-flex items-center gap-2 border border-foreground px-2 py-1 text-foreground"><span className="h-1.5 w-1.5 bg-foreground" /> v0.3</span> The agent execution workstation</p>
+          <h2 className="mt-5 max-w-4xl text-4xl font-light leading-[1.08] sm:text-5xl lg:text-6xl">
+            Nothing hidden.<br /><span className="font-bold">Every step in view.</span>
+          </h2>
         </Reveal>
         <Reveal delay={0.12}>
-          <p className="mt-5 max-w-2xl text-base leading-relaxed text-muted-foreground sm:mt-8 sm:text-lg md:text-xl">{DESC}</p>
+          <p className="mt-5 max-w-2xl text-base leading-relaxed text-muted-foreground sm:mt-6 sm:text-lg">{DESC}</p>
         </Reveal>
         <Reveal delay={0.18}>
-          <div className="mt-6 flex flex-col items-stretch gap-3 sm:mt-10 sm:flex-row sm:flex-wrap sm:items-center">
+          <div className="mt-6 flex flex-col items-stretch gap-3 sm:mt-8 sm:flex-row sm:flex-wrap sm:items-center">
             <CopyCommand />
             <GitHubButton label="View on GitHub" />
           </div>
           <div className="mt-4 flex flex-wrap gap-2 font-mono sm:mt-6 text-xs text-muted-foreground">
-            <span className="whitespace-nowrap rounded-full border border-border px-2 py-1">MIT</span>
-            <span className="whitespace-nowrap rounded-full border border-border px-2 py-1">Free & open source</span>
-            <span className="whitespace-nowrap rounded-full border border-border px-2 py-1">Local-first</span>
+            <span className="whitespace-nowrap border-r border-border px-3 py-1">MIT</span>
+            <span className="whitespace-nowrap border-r border-border px-3 py-1">Free & open source</span>
+            <span className="whitespace-nowrap border-r border-border px-3 py-1">Local-first</span>
           </div>
         </Reveal>
       </div>
-      <div className="mx-auto mt-8 max-w-[1340px] sm:mt-16 px-3 md:px-8" style={{ perspective: 1800 }}>
-        <motion.div
-          initial={reduce ? { opacity: 0 } : { opacity: 0, rotateX: 22, y: 60, scale: 0.94 }}
-          animate={{ opacity: 1, rotateX: 0, y: 0, scale: 1 }}
-          transition={{ duration: 1.4, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
-          style={{ transformOrigin: "50% 0%", y: reduce ? 0 : lift }}
-        >
-          <div className="sm:hidden">
-            <Scaled width={360}>
-              <UpdatedFlightDeck compact />
-            </Scaled>
-          </div>
-          <div className="hidden sm:block">
-            <Scaled width={1440} minScale={0.42}>
-              <UpdatedFlightDeck />
-            </Scaled>
-          </div>
-
-        </motion.div>
-      </div>
-    </section>
-  );
-}
-
-const PROBLEMS = [
-  { icon: Coins, t: "Runaway token costs", d: "Agents stuck in loops burn money before anyone notices." },
-  { icon: Shuffle, t: "Hard-to-reproduce failures", d: "Logs alone do not capture execution state, ancestry or the environment." },
-  { icon: ShieldOff, t: "Sensitive agent data", d: "Prompts and tool results can contain secrets that should not end up in telemetry." },
-  { icon: FileDown, t: "Changes without evidence", d: "A new prompt is not an improvement until you compare and evaluate the result." },
-];
-
-function Problem() {
-  return (
-    <section className="bg-offwhite py-16 sm:py-20 md:py-24">
-      <div className="mx-auto max-w-7xl px-5 md:px-8">
-        <Reveal>
-          <p className="label-mono text-muted-foreground">The problem</p>
-          <Headline pre="Multi-agent" bold="spaghetti." className="headline-sm mt-5" />
-        </Reveal>
-        <div className="mt-8 grid sm:mt-16 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {PROBLEMS.map((p, i) => (
-            <Reveal key={p.t} delay={i * 0.06}>
-              <article className="card-surface h-full p-7">
-                <p.icon {...ICON} size={22} />
-                <h3 className="mt-10 text-lg font-semibold tracking-tight">{p.t}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{p.d}</p>
-              </article>
-            </Reveal>
-          ))}
+      <div className="release-frame mt-10 pb-8 pt-6 sm:mt-12 sm:pb-12">
+        <div className="mx-auto max-w-[1340px] px-3 md:px-8">
+          <div className="mb-5 flex items-center justify-between gap-3 px-2 font-mono text-[10px] text-muted-foreground sm:text-xs"><span>FLIGHT DECK / v0.3</span><span>LOCAL-FIRST · OPEN SOURCE</span></div>
+          <motion.div initial={reduce ? {} : { opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.3 }}>
+            <ReleaseShowcase />
+          </motion.div>
         </div>
-      </div>
-    </section>
-  );
-}
-
-function BuiltFor() {
-  return (
-    <section className="border-b border-border bg-background py-16 sm:py-20 md:py-24">
-      <div className="mx-auto max-w-7xl px-5 text-center md:px-8">
-        <Reveal>
-          <h2 className="headline-sm">
-            Built for <WordSwap words={["AI Engineers", "Agent Builders", "Open Source"]} />
-          </h2>
-        </Reveal>
       </div>
     </section>
   );
@@ -246,7 +179,7 @@ function Pillars() {
       <div className="mx-auto max-w-7xl px-5 md:px-8">
         <Reveal>
           <h2 className="headline-sm max-w-4xl">
-            Understand. Experiment. Evaluate. <span className="font-bold">One workstation.</span>
+            From the first call<br /><span className="font-bold">to the final verdict.</span>
           </h2>
         </Reveal>
         <div className="mt-8 grid gap-x-8 sm:mt-12 sm:grid-cols-2 md:grid-cols-3">
@@ -276,6 +209,7 @@ function Feature({
   mock,
   width = 640,
   mobileMock,
+  wide = false,
 }: {
   i: number;
   label: string;
@@ -285,19 +219,20 @@ function Feature({
   mock: ReactNode;
   width?: number;
   mobileMock?: ReactNode;
+  wide?: boolean;
 }) {
   const flip = i % 2 === 1;
   return (
     <section className={`${i % 2 ? "bg-offwhite" : "bg-background"} py-16 sm:py-20 md:py-24`}>
-      <div className="mx-auto grid max-w-7xl min-w-0 items-center gap-8 sm:gap-14 px-5 md:px-8 lg:grid-cols-2 lg:gap-20">
-        <Reveal className={flip ? "min-w-0 lg:order-2" : "min-w-0"}>
+      <div className={`mx-auto grid max-w-7xl min-w-0 items-center gap-8 px-5 md:px-8 ${wide ? "sm:gap-10" : "sm:gap-14 lg:grid-cols-2 lg:gap-20"}`}>
+        <Reveal className={flip && !wide ? "min-w-0 lg:order-2" : "min-w-0"}>
           <p className="label-mono text-muted-foreground">{String(i + 1).padStart(2, "0")} / {label}</p>
-          <h2 className="mt-5 text-4xl font-light leading-[1.08] sm:text-5xl lg:text-6xl">
+          <h2 className="mt-5 max-w-4xl text-4xl font-light leading-[1.08] sm:text-5xl lg:text-6xl">
             {pre} <span className="font-bold">{bold}</span>
           </h2>
           <p className="mt-5 max-w-lg text-base sm:mt-6 sm:text-lg leading-relaxed text-muted-foreground">{body}</p>
         </Reveal>
-        <Reveal delay={0.1} className={flip ? "min-w-0 lg:order-1" : "min-w-0"}>
+        <Reveal delay={0.1} className={flip && !wide ? "min-w-0 lg:order-1" : "min-w-0"}>
           {mobileMock && <div className="sm:hidden"><Scaled width={360}>{mobileMock}</Scaled></div>}
           <div className={mobileMock ? "hidden sm:block" : ""}><Scaled width={width}>
             {mock}
@@ -314,24 +249,30 @@ const FEATURES = [
     pre: "Follow every step.",
     bold: "Find the failure.",
     body: "Navigate the live DAG and timeline, pin important spans and aggregate selected metrics. Follow retry chains, critical paths and causal relationships back to the source.",
-    mock: <LoopMock />,
-    mobileMock: <LoopMock compact />,
+    mock: <FlightDeckV3 view="inspector" />,
+    mobileMock: <FlightDeckV3 view="inspector" compact />,
+    width: 1440,
+    wide: true,
   },
   {
     label: "Time travel",
     pre: "Rewind and fork",
     bold: "with context intact.",
     body: "Fork a previous execution while preserving lineage and provenance. Reuse cached prefixes where available. Choose cache-only, safe or live replay; live replay requires explicit confirmation.",
-    mock: <ForkMock />,
-    mobileMock: <ForkMock compact />,
+    mock: <FlightDeckV3 view="fork" />,
+    mobileMock: <FlightDeckV3 view="fork" compact />,
+    width: 1440,
+    wide: true,
   },
   {
     label: "Breakpoints",
     pre: "Pause and edit",
     bold: "thoughts mid-flight.",
     body: "Live breakpoints pause matching requests for inspection. Mutate prompts, tool arguments or mock responses before resuming. Conditional expressions run without arbitrary JavaScript evaluation.",
-    mock: <BreakpointMock />,
-    mobileMock: <BreakpointMock compact />,
+    mock: <FlightDeckV3 view="breakpoint" />,
+    mobileMock: <FlightDeckV3 view="breakpoint" compact />,
+    width: 1440,
+    wide: true,
   },
   {
     label: "Chaos engine",
@@ -353,57 +294,11 @@ const FEATURES = [
 
 function Studios() {
   return <div id="studios">
-    <section className="border-y border-border bg-ink py-14 text-ink-foreground sm:py-20"><div className="mx-auto max-w-7xl px-5 md:px-8"><Reveal><p className="label-mono text-ink-muted">New in v0.2.0</p><h2 className="headline-sm mt-5 max-w-4xl">From debugging to <span className="font-bold">verified experiments.</span></h2><p className="mt-5 max-w-2xl text-base leading-relaxed text-ink-muted sm:text-lg">Change a prompt. Try another model. Replay the variant. Compare what changed and evaluate what improved.</p></Reveal></div></section>
-    <Feature i={5} label="Experiment Studio" pre="One run." bold="Multiple possibilities." body="Create persistent experiments from existing traces. Mutate prompts, models, tool arguments or mock responses, batch-replay variants and preserve their ancestry. Review replay history and send results to Diff Arena." mock={<ExperimentMock />} mobileMock={<ExperimentMock compact />} />
-    <Feature i={6} label="Evaluation Studio" pre="Better agents." bold="Concrete evidence." body="Evaluate cost, latency, tokens, reliability and execution topology with safe, structured assertions. Inspect error clusters and root causes, review optimization signals and export redacted JSON or Markdown reports." mock={<EvaluationMock />} mobileMock={<EvaluationMock compact />} />
-    <Feature i={7} label="Semantic Diff Arena" pre="Not just different JSON." bold="Different behavior." body="Align executions semantically to compare tool calls, models, retries and graph structure. See cost and latency deltas alongside lineage and provenance differences before deciding whether a change is a regression." mock={<SemanticDiffMock />} mobileMock={<SemanticDiffMock compact />} />
+    <section className="border-y border-border bg-ink py-14 text-ink-foreground sm:py-20"><div className="mx-auto max-w-7xl px-5 md:px-8"><Reveal><p className="label-mono text-ink-muted">THE v0.3 WORKSPACE</p><h2 className="headline-sm mt-5 max-w-4xl">From debugging to <span className="font-bold">verified experiments.</span></h2><p className="mt-5 max-w-2xl text-base leading-relaxed text-ink-muted sm:text-lg">Change a prompt. Try another model. Replay the variant. Compare what changed and evaluate what improved.</p></Reveal></div></section>
+    <Feature i={5} label="Experiment Studio" pre="One run." bold="Multiple possibilities." body="Create persistent experiments from existing traces. Mutate prompts, models, tool arguments or mock responses, batch-replay variants and preserve their ancestry. Review replay history and send results to Diff Arena." wide width={900} mock={<StudioV3 kind="experiment" />} mobileMock={<StudioV3 kind="experiment" compact />} />
+    <Feature i={6} label="Evaluation Studio" pre="Better agents." bold="Concrete evidence." body="Evaluate cost, latency, tokens, reliability and execution topology with safe, structured assertions. Inspect error clusters and root causes, review optimization signals and export redacted JSON or Markdown reports." wide width={900} mock={<StudioV3 kind="evaluation" />} mobileMock={<StudioV3 kind="evaluation" compact />} />
+    <Feature i={7} label="Semantic Diff Arena" pre="Not just different JSON." bold="Different behavior." body="Align executions semantically to compare tool calls, models, retries and graph structure. See cost and latency deltas alongside lineage and provenance differences before deciding whether a change is a regression." wide width={900} mock={<StudioV3 kind="diff" />} mobileMock={<StudioV3 kind="diff" compact />} />
   </div>;
-}
-
-function SmallCards() {
-  const cards = [
-    { icon: Scale, t: "Diff Arena", d: "Compare two runs side by side.", extra: <DiffMini /> },
-    {
-      icon: SquareTerminal,
-      t: "Regression checks",
-      d: "Compare runs and check structured assertions.",
-      extra: (
-        <div className="rounded-lg border border-deck-line bg-deck-panel p-3 font-mono text-[11px] text-deck-fg">
-          <span className="text-deck-dim">$</span> aethertrace assert
-        </div>
-      ),
-    },
-    {
-      icon: Command,
-      t: "Command palette",
-      d: "Search runs, spans, tools, models and saved queries.",
-      extra: (
-        <div className="flex flex-wrap gap-1.5 font-mono text-[10px]">
-          {["status:error", "event:tool", "cost:>0.10"].map((c) => (
-            <span key={c} className="rounded border border-deck-line px-1.5 py-0.5 text-deck-muted">{c}</span>
-          ))}
-        </div>
-      ),
-    },
-  ];
-  return (
-    <section className="bg-background py-16 sm:py-20 md:py-24">
-      <div className="mx-auto grid max-w-7xl gap-5 px-5 md:grid-cols-3 md:px-8">
-        {cards.map((c, i) => (
-            <Reveal key={c.t} delay={i * 0.06} className="min-w-0">
-            <article className="flex h-full flex-col border-t border-border py-7">
-              <div className="flex items-center gap-2">
-                <c.icon {...ICON} />
-                <h3 className="font-semibold tracking-tight">{c.t}</h3>
-              </div>
-              <p className="mt-2 text-sm text-muted-foreground">{c.d}</p>
-              <div className="mt-6 rounded-lg bg-deck p-3">{c.extra}</div>
-            </article>
-          </Reveal>
-        ))}
-      </div>
-    </section>
-  );
 }
 
 const STEPS = [
@@ -425,8 +320,8 @@ function HowItWorks() {
             <Reveal key={s.n} delay={i * 0.08}>
               <li className="card-ink flex h-full flex-col p-7 font-mono">
                 <span className="text-sm text-muted-foreground">{s.n}</span>
-                <h3 className="mt-8 font-sans text-xl font-semibold tracking-tight">{s.t}</h3>
-                <code className="mt-5 block break-words rounded-xl bg-offwhite px-3 py-3 text-xs sm:px-4 sm:text-[13px]">{s.code}</code>
+                <h3 className="mt-8 font-sans text-xl font-semibold tracking-normal">{s.t}</h3>
+                <code className="mt-5 block break-words rounded-md bg-offwhite px-3 py-3 text-xs sm:px-4 sm:text-[13px]">{s.code}</code>
                 {s.note && <p className="mt-3 text-xs text-muted-foreground">{s.note}</p>}
               </li>
             </Reveal>
@@ -456,7 +351,7 @@ function WorksWith() {
         ].map(({ icon: Icon, title, body, code }) => <article key={title} className="min-w-0 border-t border-border py-6"><Icon {...ICON} /><h3 className="mt-4 text-xl font-semibold">{title}</h3><p className="mt-3 text-sm leading-relaxed text-muted-foreground">{body}</p><code className="mt-5 block break-words font-mono text-xs">{code}</code></article>)}</div>
         <ul className="sr-only">{items.map((t) => <li key={t}>{t}</li>)}</ul>
         <div aria-hidden className="mt-8 overflow-hidden [mask-image:linear-gradient(90deg,transparent,black_10%,black_90%,transparent)]">
-          <div className="animate-marquee flex w-max gap-14 text-3xl font-light tracking-tight md:text-6xl">
+          <div className="animate-marquee flex w-max gap-14 text-3xl font-light tracking-normal md:text-6xl">
             {[...items, ...items].map((t, i) => (
               <span key={i} className="text-muted-foreground transition-colors hover:text-foreground">{t}</span>
             ))}
@@ -488,7 +383,7 @@ function LocalFirst() {
             <Reveal key={p.t} delay={i * 0.06}>
               <div className="card-surface h-full p-7">
                 <p.icon {...ICON} size={22} />
-                <h3 className="mt-8 text-lg font-semibold tracking-tight">{p.t}</h3>
+                <h3 className="mt-8 text-lg font-semibold tracking-normal">{p.t}</h3>
                 <p className="mt-2 text-sm text-muted-foreground">{p.d}</p>
               </div>
             </Reveal>
@@ -505,7 +400,7 @@ function FinalCta() {
       <div className="mx-auto max-w-7xl px-5 text-center md:px-8">
         <Reveal>
           <h2 className="headline mx-auto max-w-5xl">
-            Understand every step. <span className="font-bold">Verify every change.</span>
+            Your agents.<br /><span className="font-bold">Understood.</span>
           </h2>
         </Reveal>
         <Reveal delay={0.1}>
@@ -526,7 +421,7 @@ function Footer() {
         <Wordmark dark />
       </div>
       <div className="mx-auto grid max-w-7xl gap-4 px-5 py-8 sm:flex sm:flex-wrap sm:items-center sm:gap-6 font-mono text-xs md:px-8">
-        <span className="font-bold tracking-wider text-ink-foreground">AETHERTRACE</span>
+        <span className="font-bold text-ink-foreground">AETHERTRACE / v0.3</span>
         <nav className="flex flex-wrap gap-x-5 gap-y-1 sm:ml-auto sm:gap-6" aria-label="Footer">
           <a className="inline-flex min-h-11 items-center hover:text-ink-foreground" href={`${REPO}/blob/main/LICENSE`} target="_blank" rel="noreferrer">MIT license</a>
           <a className="inline-flex items-center gap-1 inline-flex min-h-11 items-center hover:text-ink-foreground" href={REPO} target="_blank" rel="noreferrer">GitHub <ArrowUpRight {...ICON} size={12} /></a>
@@ -543,14 +438,11 @@ function Index() {
       <Nav />
       <main>
         <Hero />
-        <Problem />
-        <BuiltFor />
         <Pillars />
+        <Studios />
         {FEATURES.map((f, i) => (
           <Feature key={f.label} i={i} {...f} />
         ))}
-        <Studios />
-        <SmallCards />
         <HowItWorks />
         <WorksWith />
         <LocalFirst />

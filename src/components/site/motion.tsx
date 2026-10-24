@@ -3,6 +3,7 @@ import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "re
 import { Check, Copy } from "lucide-react";
 import { toast } from "sonner";
 import { useHydrated } from "@tanstack/react-router";
+import { Button } from "@/components/ui/button";
 
 export const REPO = "https://github.com/ZLouada/AetherTrace";
 export const ICON = { strokeWidth: 1.75, size: 18 } as const;
@@ -98,26 +99,27 @@ export function CopyCommand({ dark = false }: { dark?: boolean }) {
     setTimeout(() => setDone(false), 1800);
   };
   return (
-    <button
+    <Button
       type="button"
+      variant="outline"
       onClick={copy}
       aria-label={`Copy command: ${cmd}`}
-      className={`group inline-flex h-12 max-w-full items-center justify-center gap-2 sm:gap-3 rounded-full border pl-3 pr-2 font-mono text-xs sm:pl-5 sm:text-sm transition-colors ${
+      className={`group inline-flex h-12 max-w-full items-center justify-center gap-2 sm:gap-3 rounded-md border pl-3 pr-2 font-mono text-xs sm:pl-5 sm:text-sm transition-colors ${
         dark
           ? "border-ink-line bg-ink text-ink-foreground hover:border-ink-muted"
           : "border-border bg-offwhite text-foreground hover:border-foreground/40"
       }`}
     >
       <span className={dark ? "text-ink-muted" : "text-muted-foreground"}>$</span>
-      <span>{cmd}</span>
+      <span>{done ? "Copied to clipboard" : cmd}</span>
       <span
-        className={`inline-flex h-8 w-8 items-center justify-center rounded-full ${
+        className={`inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-sm ${
           dark ? "bg-ink-foreground text-ink" : "bg-foreground text-background"
         }`}
       >
         {done ? <Check {...ICON} size={15} /> : <Copy {...ICON} size={15} />}
       </span>
-    </button>
+    </Button>
   );
 }
 

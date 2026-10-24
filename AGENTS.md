@@ -13,3 +13,4 @@
 - Keep fixed-width product replicas in Scaled so they always fit their container with no horizontal scrolling; on phones, render a narrower replica variant rather than shrinking the desktop one below a readable scale.
 - Use stacked compact variants for multi-pane feature replicas on phones and share their content with desktop variants; this preserves readable labels without duplicating product data.
 - Keep updated release UI replicas in a dedicated presentation module with desktop and narrow variants; this isolates screenshot-specific layouts from shared animation primitives.
+- Keep release preview selection client-side and share graph data across all preview sizes; this makes visual comparisons consistent without implying a running debugger.

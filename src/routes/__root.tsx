@@ -78,7 +78,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "AetherTrace | Wireshark for AI Agents" },
+      { title: "AetherTrace v0.3 | The Local AI Agent Debugger" },
       { name: "author", content: "AetherTrace" },
     ],
     links: [

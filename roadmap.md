@@ -1,5 +1,11 @@
 # AetherTrace website update
 
+# v0.3 refresh
+
+- [x] Refresh release branding and strengthen the page layout.
+- [x] Reproduce the new Flight Deck and full-workspace studio screens in monochrome.
+- [x] Verify the page and controls at desktop and phone widths.
+
 - [x] Refresh positioning and feature copy against the supplied v0.2.0 reference.
 - [x] Reproduce the updated DAG, Experiment Studio, Evaluation Studio and Diff Arena in monochrome.
 - [x] Add integration, evaluation, security and reproducibility coverage.
